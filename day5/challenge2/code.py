@@ -58,33 +58,29 @@ def path_finder(map: dict):
             print(values_list)
             continue
         for index_key in map[name_key].keys():
+            list_length = len(values_list)
             for index, value in enumerate(values_list):
                 max = map[name_key][index_key]["max"]
                 min = map[name_key][index_key]["min"]
                 sep = map[name_key][index_key]["sep"]
                 start = value[0]
                 rng = value[1]
-                #print("3", values_list)
-                #print("max:", max, "min:", min)
-                if (min <= start <= max) and not changed[index]:
-                    
-                    if start + rng <= max:
-                        values_list[index] = (start - sep, rng)
-                    elif start + rng > max:
-                        #print((start - sep, max - start))
-                        #print((max + 1, rng - max + start))
-                        values_list[index] = (start - sep, max - start)
-                        values_list.append((max + 1, rng - max + start))
-                        changed.append(True)
+                end = start + rng
+                if start > max or end < min:
+                    continue
+                if min <= start and end <= max and not changed[index]:
+                    values_list[index] = (start - sep, rng)
                     changed[index] = True
-                if (min < start + rng < max) and not changed[index]:
-                    #print((start, min - start))
-                    #print((min, start + rng - min))
-                    values_list[index] = (start, min - start)
-                    values_list.append((min - sep, rng + start - min))
+                if min <= start <= max and end > max and not changed[index]:
+                    values_list[index] = (start - sep, max - start)
+                    changed[index] = True
+                    values_list.append((max + 1, end - max))
                     changed.append(True)
+                if start < min and min <= end <= max and not changed[index]:
+                    values_list[index] = (start, min - start)
                     changed[index] = True
-                
+                    values_list.append((min - sep, end - min))
+                    changed.append(True)
             print(values_list)
     return values_list
 
